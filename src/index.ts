@@ -1,0 +1,1 @@
+export const TestViz = (name: string) => `Setup working ${name}`; 
