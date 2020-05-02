@@ -20,18 +20,23 @@ export const defaultFormSparkOptions: FormSparkOptions = {
   },
 };
 
-export const formSpark = (selector: string, data: (string | number)[], options: Partial<FormSparkOptions> = {}) => {
+export const formSpark = (selector: string, data: (string | number)[] | null, options: Partial<FormSparkOptions> = {}) => {
   const { height, width, backgronudColor } = { ...defaultFormSparkOptions, ...options };
-
-  d3.select(selector).select('svg').remove();
-
-  const svg = d3
-    .select(selector)
+  const element = d3.select(selector)
+  element.select('svg').remove();
+  if (!data) {
+    data = element.attr("data").split(",")
+  }
+  const svg = element
     .append('svg')
     .style('background-color', backgronudColor)
     .attr('viewBox', `0, 0, ${width}, ${height}`);
 
-  svg.append('g').call(formSparkCall(data, options));
+  if (data) {
+    svg.append('g').call(formSparkCall(data, options));
+  } else {
+    throw new Error("No data provided")
+  }
 };
 
 export const formSparkCall = (data: (string | number)[], options: Partial<FormSparkOptions> = {}) => {
