@@ -1,3 +1,4 @@
 import * as FormSpark from './charts/formSpark';
-
-export { FormSpark };
+import * as InningsRunRate from './charts/inningsProgressiveRuneRate';
+import * as types from './types';
+export { FormSpark, InningsRunRate, types };
