@@ -1,7 +1,7 @@
 {
   "name": "cricket-visuals",
-  "version": "0.1.0",
-  "main": "index.js",
+  "version": "0.1.2",
+  "main": "lib/index.js",
   "license": "MIT",
   "scripts": {
     "build": "tsc",
@@ -25,5 +25,9 @@
   },
   "files": [
     "lib/**/*"
-  ]
+  ],
+  "dependencies": {
+    "@types/d3": "^5.7.2",
+    "d3": "^5.16.0"
+  }
 }

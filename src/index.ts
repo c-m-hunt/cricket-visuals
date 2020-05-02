@@ -1,1 +1,3 @@
-export const TestViz = (name: string) => `Setup working ${name}`; 
+import * as FormSpark from './charts/formSpark';
+
+export { FormSpark };
