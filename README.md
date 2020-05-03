@@ -2,6 +2,9 @@
 
 An effort to come up with some more innovative and interesting visualisations of cricket game data.
 
+## Chart demos
+Check out https://github.com/c-m-hunt/cricket-visuals-demos
+
 ## Install
 ```
 npm install cricket-visuals
