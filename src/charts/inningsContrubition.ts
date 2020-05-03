@@ -23,7 +23,8 @@ export interface InningsContributionData {
   batsmen: {
     [key: string]: {
       notOut: boolean;
-      bowlers: {
+      score?: number;
+      bowlers?: {
         [key: string]: number;
       };
     };

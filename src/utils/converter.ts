@@ -25,11 +25,18 @@ export const convertInningsContributionToHierarchy = (data: InningsContributionD
       name: batName,
       children: [],
     };
-    for (const bowlerName of Object.keys(data.batsmen[batName].bowlers)) {
-      batData.children.push({
-        name: bowlerName,
-        value: data.batsmen[batName].bowlers[bowlerName],
-      });
+    if (data.batsmen[batName].bowlers) {
+      // @ts-ignore
+      for (const bowlerName of Object.keys(data.batsmen[batName].bowlers)) {
+        batData.children.push({
+          name: bowlerName,
+          // @ts-ignore
+          value: data.batsmen[batName].bowlers[bowlerName],
+        });
+      }
+    } else {
+      delete batData.children;
+      batData.value = data.batsmen[batName].score ? data.batsmen[batName].score : 0
     }
     hierachyData.children.push(batData);
   }

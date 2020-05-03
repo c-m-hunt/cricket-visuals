@@ -50,6 +50,10 @@ describe('object to hierarchy', () => {
             'B Bowler': 11,
           },
         },
+        'N Hussain': {
+          notOut: false,
+          score: 20
+        }
       },
     };
 
@@ -82,6 +86,10 @@ describe('object to hierarchy', () => {
             },
           ],
         },
+        {
+          name: 'N Hussain',
+          value: 20
+        }
       ],
     };
 
