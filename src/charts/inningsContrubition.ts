@@ -50,10 +50,7 @@ export const inningsContribution = (
   });
 };
 
-export const inningsContributionCall = (
-  dataIn: InningsContributionData,
-  options: Partial<ChartOptions> = {},
-) => {
+export const inningsContributionCall = (dataIn: InningsContributionData, options: Partial<ChartOptions> = {}) => {
   const data = convertInningsContributionToHierarchy(dataIn);
   const { width } = { ...defaultInningsContributionOptions, ...options };
 
