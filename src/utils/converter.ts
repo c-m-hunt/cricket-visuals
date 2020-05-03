@@ -18,14 +18,14 @@ export const convertBallsToProgressiveRunRate = (data: number[]): number[] => {
 };
 
 export const convertInningsContributionToHierarchy = (data: InningsContributionData) => {
-  let hierachyData: any = { name: data.teamName, children: [] };
+  const hierachyData: any = { name: data.teamName, children: [] };
 
-  for (const batName in data.batsmen) {
-    let batData: any = {
+  for (const batName of Object.keys(data.batsmen)) {
+    const batData: any = {
       name: batName,
       children: [],
     };
-    for (const bowlerName in data.batsmen[batName].bowlers) {
+    for (const bowlerName of Object.keys(data.batsmen[batName].bowlers)) {
       batData.children.push({
         name: bowlerName,
         value: data.batsmen[batName].bowlers[bowlerName],

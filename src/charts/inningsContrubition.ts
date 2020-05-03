@@ -4,9 +4,7 @@ import { ChartOptions } from './../types';
 import { convertInningsContributionToHierarchy } from '../utils/converter';
 import { autoBox, generalFormatting } from './chartUtils';
 
-export interface InningsContributionOptions extends ChartOptions {}
-
-export const defaultInningsContributionOptions: InningsContributionOptions = {
+export const defaultInningsContributionOptions: ChartOptions = {
   backgronudColor: 'transparent',
   foregroundColor: 'blue',
   height: 300,
@@ -35,24 +33,18 @@ export interface InningsContributionData {
 export const inningsContribution = (
   selector: string,
   data: InningsContributionData,
-  options: Partial<InningsContributionOptions> = {},
+  options: Partial<ChartOptions> = {},
 ) => {
   const { height, width, backgronudColor } = { ...defaultInningsContributionOptions, ...options };
   d3.selectAll(selector).each((d, i, nodes: any) => {
     const element = d3.select(nodes[i]);
-    let elementData = data;
     element.select('svg').remove();
     const svg = element
       .append('svg')
       .style('background-color', backgronudColor)
       .attr('viewBox', `0, 0, ${width}, ${height}`);
 
-    if (elementData) {
-      svg.append('g').call(inningsContributionCall(elementData, options));
-    } else {
-      throw new Error('No data provided');
-    }
-
+    svg.append('g').call(inningsContributionCall(data, options));
     svg.attr('viewBox', autoBox);
     svg.call(generalFormatting);
   });
@@ -60,16 +52,16 @@ export const inningsContribution = (
 
 export const inningsContributionCall = (
   dataIn: InningsContributionData,
-  options: Partial<InningsContributionOptions> = {},
+  options: Partial<ChartOptions> = {},
 ) => {
   const data = convertInningsContributionToHierarchy(dataIn);
-  const { margin, height, width, foregroundColor } = { ...defaultInningsContributionOptions, ...options };
+  const { width } = { ...defaultInningsContributionOptions, ...options };
 
   const radius = width / 2;
-  const partition = (data) =>
+  const partition = (dataToConvert) =>
     d3.partition().size([2 * Math.PI, radius])(
       d3
-        .hierarchy(data)
+        .hierarchy(dataToConvert)
         .sum((d) => d.value)
         .sort((a, b) => b.value - a.value),
     );
@@ -123,7 +115,7 @@ export const inningsContributionCall = (
         (d) =>
           `${d
             .ancestors()
-            .map((d) => d.data.name)
+            .map((d2) => d2.data.name)
             .reverse()
             .join('/')}\n${format(d.value)}`,
       );
@@ -139,7 +131,7 @@ export const inningsContributionCall = (
       .call(addAngledText('0.15em', (d) => d.data.name))
       .call(
         addAngledText('1.1em', (d) => {
-          if (d.depth == 1) {
+          if (d.depth === 1) {
             return `${d.value}${dataIn.batsmen[d.data.name].notOut ? '*' : ''}`;
           }
         }),
