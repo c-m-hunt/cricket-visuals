@@ -1,7 +1,7 @@
 import * as d3 from 'd3';
 import { ChartOptions } from './../types';
 import { convertBallsToProgressiveRunRate } from '../utils/converter';
-import { generalFormatting, generateGrid } from './utils';
+import { generalFormatting, generateGrid } from './chartUtils';
 
 interface ProgressiveRunRateOptions extends ChartOptions {
   showGrid: boolean;

@@ -1,4 +1,5 @@
 import { BatsmanInnings } from './../cricketTypes';
+import { InningsContributionData } from './../charts/inningsContrubition';
 
 export const convertInningsToRunsAndNOs = (data: (string | number)[]): BatsmanInnings[] => {
   return data.map((d) => {
@@ -14,4 +15,23 @@ export const convertBallsToProgressiveRunRate = (data: number[]): number[] => {
     runningTotal += b;
     return (runningTotal / (i + 1)) * 100;
   });
+};
+
+export const convertInningsContributionToHierarchy = (data: InningsContributionData) => {
+  let hierachyData: any = { name: data.teamName, children: [] };
+
+  for (const batName in data.batsmen) {
+    let batData: any = {
+      name: batName,
+      children: [],
+    };
+    for (const bowlerName in data.batsmen[batName].bowlers) {
+      batData.children.push({
+        name: bowlerName,
+        value: data.batsmen[batName].bowlers[bowlerName],
+      });
+    }
+    hierachyData.children.push(batData);
+  }
+  return hierachyData;
 };

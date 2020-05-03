@@ -1,6 +1,6 @@
 export const generalFormatting = (g) => g.selectAll('text').attr('font-family', 'sans-serif');
 
-export const generateGrid = (x, y, width, height, margin) => {
+export const generateGrid = (x, y, width: number, height: number, margin) => {
   return (g) =>
     g
       .attr('stroke', 'blue')
@@ -27,4 +27,9 @@ export const generateGrid = (x, y, width, height, margin) => {
           .attr('x1', margin.left)
           .attr('x2', width - margin.right),
       );
+};
+
+export const autoBox = (d, i, nodes) => {
+  const { x, y, width, height } = nodes[i].getBBox();
+  return [x, y, width, height];
 };
