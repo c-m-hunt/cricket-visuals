@@ -86,6 +86,19 @@ export const inningsContributionCall = (
     .innerRadius((d) => d.y0)
     .outerRadius((d) => d.y1 - 1);
 
+  const addAngledText = (dy, getText) => {
+    return (g) => {
+      g.append('text')
+        .attr('transform', (d) => {
+          const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
+          const y = (d.y0 + d.y1) / 2;
+          return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
+        })
+        .attr('dy', dy)
+        .text((d) => getText(d));
+    };
+  };
+
   const chart = (g) => {
     g.append('g')
       .attr('fill-opacity', 0.6)
@@ -120,16 +133,17 @@ export const inningsContributionCall = (
       .attr('text-anchor', 'middle')
       .attr('font-size', 15)
       .attr('font-family', 'sans-serif')
-      .selectAll('text')
+      .selectAll('g')
       .data(root.descendants().filter((d) => d.depth && ((d.y0 + d.y1) / 2) * (d.x1 - d.x0) > 10))
-      .join('text')
-      .attr('transform', function (d) {
-        const x = (((d.x0 + d.x1) / 2) * 180) / Math.PI;
-        const y = (d.y0 + d.y1) / 2;
-        return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
-      })
-      .attr('dy', '0.35em')
-      .text((d) => d.data.name);
+      .join('g')
+      .call(addAngledText('0.15em', (d) => d.data.name))
+      .call(
+        addAngledText('1.1em', (d) => {
+          if (d.depth == 1) {
+            return `${d.value}${dataIn.batsmen[d.data.name].notOut ? '*' : ''}`;
+          }
+        }),
+      );
 
     g.append('text')
       .attr('text-anchor', 'middle')
