@@ -27,18 +27,24 @@ export const progressiveRunRate = (
   options: Partial<ProgressiveRunRateOptions> = {},
 ) => {
   const { height, width, backgronudColor } = { ...defaultProgressiveRunRateOptions, ...options };
-  const element = d3.select(selector);
-  element.select('svg').remove();
-  const svg = element
-    .append('svg')
-    .style('background-color', backgronudColor)
-    .attr('viewBox', `0, 0, ${width}, ${height}`);
+  d3.selectAll(selector).each((d, i, nodes: any) => {
+    const element = d3.select(nodes[i]);
+    let elementData = data;
+    element.select('svg').remove();
+    if (!elementData) {
+      elementData = element.attr('data').toString().split(',').map(r => parseInt(r));
+    }
+    const svg = element
+      .append('svg')
+      .style('background-color', backgronudColor)
+      .attr('viewBox', `0, 0, ${width}, ${height}`);
 
-  if (data) {
-    svg.append('g').call(progressiveRunRateCall(data, options));
-  } else {
-    throw new Error('No data provided');
-  }
+    if (elementData) {
+      svg.append('g').call(progressiveRunRateCall(elementData, options));
+    } else {
+      throw new Error('No data provided');
+    }
+  })
 };
 
 export const progressiveRunRateCall = (ballsData: number[], options: Partial<ProgressiveRunRateOptions> = {}) => {
