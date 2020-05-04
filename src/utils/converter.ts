@@ -42,3 +42,7 @@ export const convertInningsContributionToHierarchy = (data: InningsContributionD
   }
   return hierachyData;
 };
+
+export const convertRequiredRunsAndBallsToRequiredStrikeRate = (data: [number, number][]): number[] => {
+  return data.map(b => (b[0] / b[1]) * 100)
+}
