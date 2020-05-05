@@ -2,6 +2,7 @@ import {
   convertInningsToRunsAndNOs,
   convertBallsToProgressiveRunRate,
   convertInningsContributionToHierarchy,
+  convertRequiredRunsAndBallsToRequiredStrikeRate,
 } from '../converter';
 import { InningsContributionData } from '../../charts/inningsContrubition';
 
@@ -28,6 +29,16 @@ describe('converts stuff', () => {
     expect(actualOut[1]).toEqual(50);
     expect(actualOut[5]).toEqual(100);
   });
+
+  test('it converts runs required and balls to required strike rate', () => {
+    const data = [
+      [5, 10],
+      [4, 8],
+    ];
+    const expectedOut = [50, 50];
+    // @ts-ignore
+    expect(convertRequiredRunsAndBallsToRequiredStrikeRate(data)).toEqual(expectedOut);
+  });
 });
 
 describe('object to hierarchy', () => {
@@ -52,8 +63,8 @@ describe('object to hierarchy', () => {
         },
         'N Hussain': {
           notOut: false,
-          score: 20
-        }
+          score: 20,
+        },
       },
     };
 
@@ -88,8 +99,8 @@ describe('object to hierarchy', () => {
         },
         {
           name: 'N Hussain',
-          value: 20
-        }
+          value: 20,
+        },
       ],
     };
 

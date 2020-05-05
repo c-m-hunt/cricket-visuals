@@ -44,8 +44,9 @@ FormSpark.formSpark("#form_spark", data, { foregroundColor: "green" })
 ### Innings Progressive Run Rate
 Shows the progression of a batsman's run rate through their innings
 #### Attribute data
+Only basic run rate chart available through attribute data.
 ```html
-<div class='progress_rr' data="0, 1, 0, 0, 4, 0, 4, 0, 0, 2, 0, 0, 6,0, 1, 0, 0, 4, 0, 4, 0, 0, 2, 0, 0, 6,0, 1, 0, 0, 4, 0, 4, 0, 0, 2, 0, 0, 6" style="width: 500px;" ></div>
+<div class='progress_rr' data="1,0,0,0,0,0,0,0,0,4,0,0,0,0,0,0,1,0,0,1,2,0,0,0,1,0,0,0,0,0,0,0,4,0,1,0,1,1,0,1,0,0,1,1,1,0,1,2,2,2,1,0,1,0,1,0,1,0,1,0,2,1,0,4,0,1,0,0,1,1,0,0,0,0,1,0,2,0,0,1,1,0,1,1,1,0,0,1,4,1,4,1,1,6,1,0,0,6,6,1,1" style="width: 500px;" ></div>
 ```
 ```javascript
 import { InningsRunRate } from 'cricket-visuals'
@@ -58,9 +59,14 @@ InningsRunRate.progressiveRunRate(
 #### Supplied data
 ```javascript
 import { InningsRunRate } from 'cricket-visuals'
+const data2 = {
+  balls: [1,0,0,0,0,0,0,0,4,0,0,0,0,0,0,1,0,0,1,2,0,0,0,1,0,0,0,0,0,0,0,4,1,0,1,1,0,1,0,0,1,1,1,0,1,2,2,2,1,0,1,0,1,0,1,0,1,0,2,1,0,4,0,1,0,0,1,1,0,0,0,1,0,2,0,0,1,1,0,1,1,1,0,0,1,4,1,4,1,1,6,1,0,0,6,6,1,1],
+  inningsRunRateRequired: 80.66666666,
+  batsmanName: "Ben Stokes"
+}
 InningsRunRate.progressiveRunRate(
   "#progress_rr",
-  [0, 1, 0, 0, 4, 0, 4, 0, 0, 2, 0, 0, 6,0, 1, 0, 0, 4, 0, 4, 0, 0, 2, 0, 0, 6,0, 1, 0, 0, 4, 0, 4, 0, 0, 2, 0, 0, 6],
+  data,
   {showGrid: true}
 )
 ```
