@@ -41,7 +41,13 @@ export const progressiveRunRate = (
     let elementData = data;
     element.select('svg').remove();
     if (!elementData) {
-      elementData = { balls: element.attr('data').toString().split(',').map(r => parseInt(r)) };
+      elementData = {
+        balls: element
+          .attr('data')
+          .toString()
+          .split(',')
+          .map((r) => parseInt(r)),
+      };
     }
     const svg = element
       .append('svg')
@@ -53,23 +59,29 @@ export const progressiveRunRate = (
     } else {
       throw new Error('No data provided');
     }
-  })
+  });
 };
 
-export const progressiveRunRateCall = (ballsData: ProgressiveRunRateData, options: Partial<ProgressiveRunRateOptions> = {}) => {
+export const progressiveRunRateCall = (
+  ballsData: ProgressiveRunRateData,
+  options: Partial<ProgressiveRunRateOptions> = {},
+) => {
   const { margin, height, width, showGrid } = { ...defaultProgressiveRunRateOptions, ...options };
 
   const runsData = convertBallsToProgressiveRunRate(ballsData.balls);
 
-  let extent = d3.extent(runsData, (d) => d)
+  let extentCheck: any = [...runsData]
   if (ballsData.runRateRequired) {
-    extent = d3.extent([...runsData, ...ballsData.runRateRequired], (d) => d)
+    extentCheck = [...extentCheck, ...ballsData.runRateRequired];
+  }
+  if (ballsData.inningsRunRateRequired) {
+    extentCheck = [...extentCheck, ...[ballsData.inningsRunRateRequired]];
   }
 
   const y = d3
     .scaleLinear()
     // @ts-ignore
-    .domain(extent)
+    .domain(d3.extent(extentCheck, d => d))
     .nice()
     .range([height - margin.bottom, margin.top]);
 
@@ -87,18 +99,21 @@ export const progressiveRunRateCall = (ballsData: ProgressiveRunRateData, option
     const annotations: any[] = [];
 
     if (ballsData.batsmanName) {
-      const nameAnnotationIdx = parseInt((ballsData.balls.length * (2/3)).toString())
-      annotations.push(
-        {
-          note: {
-            title: ballsData.batsmanName
-          },
-          x: x(nameAnnotationIdx + 1),
-          y: y(runsData[nameAnnotationIdx]),
-          dy: 30,
-          dx: 100
-        }
-      )
+      const nameAnnotationIdx = parseInt((ballsData.balls.length * (2 / 3)).toString());
+      const finalRunRate = runsData[runsData.length - 1];
+      annotations.push({
+        note: {
+          label: `SR ${finalRunRate.toFixed(2)} (${(
+            (runsData[runsData.length - 1] / 100) *
+            6
+          ).toFixed(2)} RPO)`,
+          title: ballsData.batsmanName,
+        },
+        x: x(nameAnnotationIdx + 1),
+        y: y(runsData[nameAnnotationIdx]),
+        dy: 30,
+        dx: 100,
+      });
     }
 
     g.append('g').call(xAxis);
@@ -109,57 +124,57 @@ export const progressiveRunRateCall = (ballsData: ProgressiveRunRateData, option
       .datum(runsData)
       .attr('fill', 'none')
       .attr('stroke', 'red')
-      .attr('stroke-width', 2)
+      .attr('stroke-width', 1)
       .attr(
         'd',
         d3
           .line()
           .x((d, i) => x(i + 1))
+          // @ts-ignore
           .y((d) => y(d)),
       );
 
     if (ballsData.runRateRequired) {
       g.append('path')
-      .datum(ballsData.runRateRequired)
-      .attr('fill', 'none')
-      .attr('stroke', 'red')
-      .attr('stroke-width', 2)
-      .attr(
-        'd',
-        d3
-          .line()
-          .x((d, i) => x(i + 1))
-          .y((d) => y(d)),
-      );
+        .datum(ballsData.runRateRequired)
+        .attr('fill', 'none')
+        .attr('stroke', 'red')
+        .attr('stroke-width', 1)
+        .attr(
+          'd',
+          d3
+            .line()
+            .x((d, i) => x(i + 1))
+            // @ts-ignore
+            .y((d) => y(d)),
+        );
     }
 
     if (ballsData.inningsRunRateRequired) {
-
-      annotations.push(
-        {
-          note: {
-            label: `${((ballsData.inningsRunRateRequired / 100) * 6).toLocaleString() } RPO`,
-            title: "Innings Required Run Rate"
-          },
-          x: 100,
-          y: y(ballsData.inningsRunRateRequired),
-          dy: 30,
-          dx: 100
-        }
-      )
+      annotations.push({
+        note: {
+          label: `${((ballsData.inningsRunRateRequired / 100) * 6).toFixed(2)} RPO`,
+          title: 'Innings Required Run Rate',
+        },
+        x: 100,
+        y: y(ballsData.inningsRunRateRequired),
+        dy: 30,
+        dx: 100,
+      });
 
       g.append('path')
-      .datum(ballsData.balls)
-      .attr('fill', 'none')
-      .attr('stroke', 'blue')
-      .attr('stroke-width', 2)
-      .attr(
-        'd',
-        d3
-          .line()
-          .x((d, i) => x(i + 1))
-          .y((d) => y(ballsData.inningsRunRateRequired)),
-      );
+        .datum(ballsData.balls)
+        .attr('fill', 'none')
+        .attr('stroke', 'blue')
+        .attr('stroke-width', 1)
+        .attr(
+          'd',
+          d3
+            .line()
+            .x((d, i) => x(i + 1))
+            // @ts-ignore
+            .y((d) => y(ballsData.inningsRunRateRequired)),
+        );
     }
 
     if (showGrid) {
@@ -177,10 +192,9 @@ export const progressiveRunRateCall = (ballsData: ProgressiveRunRateData, option
       .attr('x', width / 2)
       .text('Balls');
 
-    g.append("g")
+    g.append('g')
       // @ts-ignore
-      .call(d3Annotation.annotation()
-        .annotations(annotations))
+      .call(d3Annotation.annotation().annotations(annotations));
 
     g.call(generalFormatting);
   };

@@ -36,7 +36,7 @@ export const convertInningsContributionToHierarchy = (data: InningsContributionD
       }
     } else {
       delete batData.children;
-      batData.value = data.batsmen[batName].score ? data.batsmen[batName].score : 0
+      batData.value = data.batsmen[batName].score ? data.batsmen[batName].score : 0;
     }
     hierachyData.children.push(batData);
   }
@@ -44,5 +44,5 @@ export const convertInningsContributionToHierarchy = (data: InningsContributionD
 };
 
 export const convertRequiredRunsAndBallsToRequiredStrikeRate = (data: [number, number][]): number[] => {
-  return data.map(b => (b[0] / b[1]) * 100)
-}
+  return data.map((b) => (b[0] / b[1]) * 100);
+};
