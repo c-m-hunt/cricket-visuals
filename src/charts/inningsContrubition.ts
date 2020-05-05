@@ -58,10 +58,8 @@ export const inningsContributionCall = (dataIn: InningsContributionData, options
   const radius = width / 2;
   const partition = (dataToConvert) =>
     d3.partition().size([2 * Math.PI, radius])(
-      d3
-        .hierarchy(dataToConvert)
-        .sum((d) => d.value)
-        .sort((a, b) => b.value - a.value),
+      d3.hierarchy(dataToConvert).sum((d) => d.value),
+      //.sort((a, b) => b.value - a.value),
     );
 
   const root = partition(data);
@@ -96,12 +94,12 @@ export const inningsContributionCall = (dataIn: InningsContributionData, options
       .data(root.descendants().filter((d) => d.depth))
       .join('path')
       .attr('fill', (d) => {
-        const lighten = false;
+        let lighten = false;
         while (d.depth > 1) {
           d = d.parent;
           lighten = true;
         }
-        const outColor = color(d.data.name);
+        let outColor = color(d.data.name);
         if (lighten) {
           outColor = d3.hsl(outColor).brighter(1);
         }
