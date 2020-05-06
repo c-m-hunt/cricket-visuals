@@ -3,7 +3,7 @@ import { select, selectAll } from 'd3-selection';
 import { scaleOrdinal } from 'd3-scale';
 import { hsl } from 'd3-color';
 import { quantize } from 'd3-interpolate';
-import { interpolateRainbow } from 'd3-scale-chromatic'; 
+import { interpolateRainbow } from 'd3-scale-chromatic';
 import { partition, hierarchy } from 'd3-hierarchy';
 import { arc } from 'd3-shape';
 import { format as d3format } from 'd3-format';

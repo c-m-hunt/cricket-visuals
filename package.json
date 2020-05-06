@@ -1,8 +1,7 @@
 {
   "name": "cricket-visuals",
-  "version": "0.1.6-dev4",
+  "version": "0.1.7",
   "main": "dist/cricket-visuals.js",
-  "type": "module",
   "types": "lib/index.ds.ts",
   "license": "MIT",
   "scripts": {
