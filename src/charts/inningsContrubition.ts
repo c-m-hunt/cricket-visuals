@@ -1,5 +1,12 @@
 // @ts-nocheck
-import * as d3 from 'd3';
+import { select, selectAll } from 'd3-selection';
+import { scaleOrdinal } from 'd3-scale';
+import { hsl } from 'd3-color';
+import { quantize } from 'd3-interpolate';
+import { interpolateRainbow } from 'd3-scale-chromatic'; 
+import { partition, hierarchy } from 'd3-hierarchy';
+import { arc } from 'd3-shape';
+import { format as d3format } from 'd3-format';
 import { ChartOptions } from './../types';
 import { convertInningsContributionToHierarchy } from '../utils/converter';
 import { autoBox, generalFormatting } from './chartUtils';
@@ -37,8 +44,8 @@ export const inningsContribution = (
   options: Partial<ChartOptions> = {},
 ) => {
   const { height, width, backgronudColor } = { ...defaultInningsContributionOptions, ...options };
-  d3.selectAll(selector).each((d, i, nodes: any) => {
-    const element = d3.select(nodes[i]);
+  selectAll(selector).each((d, i, nodes: any) => {
+    const element = select(nodes[i]);
     element.select('svg').remove();
     const svg = element
       .append('svg')
@@ -56,17 +63,16 @@ export const inningsContributionCall = (dataIn: InningsContributionData, options
   const { width } = { ...defaultInningsContributionOptions, ...options };
 
   const radius = width / 2;
-  const partition = (dataToConvert) =>
-    d3.partition().size([2 * Math.PI, radius])(
-      d3.hierarchy(dataToConvert).sum((d) => d.value),
+  const partitionFn = (dataToConvert) =>
+    partition().size([2 * Math.PI, radius])(
+      hierarchy(dataToConvert).sum((d) => d.value),
       // .sort((a, b) => b.value - a.value),
     );
 
-  const root = partition(data);
-  const color = d3.scaleOrdinal(d3.quantize(d3.interpolateRainbow, data.children.length + 1));
-  const format = d3.format(',d');
-  const arc = d3
-    .arc()
+  const root = partitionFn(data);
+  const color = scaleOrdinal(quantize(interpolateRainbow, data.children.length + 1));
+  const format = d3format(',d');
+  const arcFn = arc()
     .startAngle((d) => d.x0)
     .endAngle((d) => d.x1)
     .padAngle((d) => Math.min((d.x1 - d.x0) / 2, 0.005))
@@ -101,11 +107,11 @@ export const inningsContributionCall = (dataIn: InningsContributionData, options
         }
         let outColor = color(d.data.name);
         if (lighten) {
-          outColor = d3.hsl(outColor).brighter(1);
+          outColor = hsl(outColor).brighter(1);
         }
         return outColor;
       })
-      .attr('d', arc)
+      .attr('d', arcFn)
       .append('title')
       .text(
         (d) =>

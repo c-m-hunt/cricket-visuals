@@ -1,4 +1,7 @@
-import * as d3 from 'd3';
+import { select, selectAll } from 'd3-selection';
+import { extent } from 'd3-array';
+import { scaleLinear } from 'd3-scale';
+import { hsl } from 'd3-color';
 import { ChartOptions } from './../types';
 import { BatsmanInnings } from './../cricketTypes';
 import { convertInningsToRunsAndNOs } from '../utils/converter';
@@ -26,8 +29,8 @@ export const formSpark = (
   options: Partial<FormSparkOptions> = {},
 ) => {
   const { height, width, backgronudColor } = { ...defaultFormSparkOptions, ...options };
-  d3.selectAll(selector).each((d, i, nodes: any) => {
-    const element = d3.select(nodes[i]);
+  selectAll(selector).each((d, i, nodes: any) => {
+    const element = select(nodes[i]);
     let elementData = data;
     element.select('svg').remove();
     if (!elementData) {
@@ -51,19 +54,17 @@ export const formSparkCall = (data: (string | number)[], options: Partial<FormSp
   const { margin, height, width, foregroundColor, maxRuns } = { ...defaultFormSparkOptions, ...options };
 
   // @ts-ignore
-  let yExtent: number[] = d3.extent(convertedData, (d) => d[0]);
+  let yExtent: number[] = extent(convertedData, (d) => d[0]);
   if (maxRuns) {
     yExtent = [0, maxRuns];
   }
 
-  const y = d3
-    .scaleLinear()
+  const y = scaleLinear()
     .domain(yExtent)
     .nice()
     .range([height - margin.bottom, margin.top]);
 
-  const x = d3
-    .scaleLinear()
+  const x = scaleLinear()
     .domain([0, convertedData.length])
     .nice()
     .range([margin.left, width - margin.right]);
@@ -72,7 +73,7 @@ export const formSparkCall = (data: (string | number)[], options: Partial<FormSp
     g.selectAll('rect')
       .data(convertedData)
       .join('rect')
-      .attr('fill', (d: BatsmanInnings) => (d[1] ? d3.hsl(foregroundColor).brighter(1) : foregroundColor))
+      .attr('fill', (d: BatsmanInnings) => (d[1] ? hsl(foregroundColor).brighter(1) : foregroundColor))
       .attr('x', (_: BatsmanInnings, i: number) => x(i))
       .attr('y', (d: BatsmanInnings) => y(d[0]))
       .attr('height', (d: BatsmanInnings) => y(0) - y(d[0]))
