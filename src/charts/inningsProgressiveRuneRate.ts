@@ -1,4 +1,8 @@
-import * as d3 from 'd3';
+import { select, selectAll } from 'd3-selection';
+import { extent } from 'd3-array';
+import { scaleLinear } from 'd3-scale';
+import { axisLeft, axisBottom } from 'd3-axis';
+import { line } from 'd3-shape';
 import * as d3Annotation from 'd3-svg-annotation';
 import { ChartOptions } from './../types';
 import { convertBallsToProgressiveRunRate } from '../utils/converter';
@@ -36,8 +40,8 @@ export const progressiveRunRate = (
   options: Partial<ProgressiveRunRateOptions> = {},
 ) => {
   const { height, width, backgronudColor } = { ...defaultProgressiveRunRateOptions, ...options };
-  d3.selectAll(selector).each((d, i, nodes: any) => {
-    const element = d3.select(nodes[i]);
+  selectAll(selector).each((d, i, nodes: any) => {
+    const element = select(nodes[i]);
     let elementData = data;
     element.select('svg').remove();
     if (!elementData) {
@@ -78,22 +82,20 @@ export const progressiveRunRateCall = (
     extentCheck = [...extentCheck, ...[ballsData.inningsRunRateRequired]];
   }
 
-  const y = d3
-    .scaleLinear()
+  const y = scaleLinear()
     // @ts-ignore
-    .domain(d3.extent(extentCheck, (d) => d))
+    .domain(extent(extentCheck, (d) => d))
     .nice()
     .range([height - margin.bottom, margin.top]);
 
-  const x = d3
-    .scaleLinear()
+  const x = scaleLinear()
     .domain([0, runsData.length])
     .nice()
     .range([margin.left, width - margin.right]);
 
-  const yAxis = (g) => g.attr('transform', `translate(${margin.left},0)`).call(d3.axisLeft(y));
+  const yAxis = (g) => g.attr('transform', `translate(${margin.left},0)`).call(axisLeft(y));
 
-  const xAxis = (g) => g.attr('transform', `translate(0,${height - margin.bottom})`).call(d3.axisBottom(x));
+  const xAxis = (g) => g.attr('transform', `translate(0,${height - margin.bottom})`).call(axisBottom(x));
 
   const chart = (g) => {
     const annotations: any[] = [];
@@ -124,8 +126,7 @@ export const progressiveRunRateCall = (
       .attr('stroke-width', 1)
       .attr(
         'd',
-        d3
-          .line()
+        line()
           .x((d, i) => x(i + 1))
           // @ts-ignore
           .y((d) => y(d)),
@@ -139,8 +140,7 @@ export const progressiveRunRateCall = (
         .attr('stroke-width', 1)
         .attr(
           'd',
-          d3
-            .line()
+          line()
             .x((d, i) => x(i + 1))
             // @ts-ignore
             .y((d) => y(d)),
@@ -166,8 +166,7 @@ export const progressiveRunRateCall = (
         .attr('stroke-width', 1)
         .attr(
           'd',
-          d3
-            .line()
+          line()
             .x((d, i) => x(i + 1))
             // @ts-ignore
             .y((d) => y(ballsData.inningsRunRateRequired)),
