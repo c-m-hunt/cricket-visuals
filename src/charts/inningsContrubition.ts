@@ -59,7 +59,7 @@ export const inningsContributionCall = (dataIn: InningsContributionData, options
   const partition = (dataToConvert) =>
     d3.partition().size([2 * Math.PI, radius])(
       d3.hierarchy(dataToConvert).sum((d) => d.value),
-      //.sort((a, b) => b.value - a.value),
+      // .sort((a, b) => b.value - a.value),
     );
 
   const root = partition(data);

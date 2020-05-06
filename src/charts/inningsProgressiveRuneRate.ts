@@ -46,7 +46,7 @@ export const progressiveRunRate = (
           .attr('data')
           .toString()
           .split(',')
-          .map((r) => parseInt(r)),
+          .map((r) => parseInt(r, 10)),
       };
     }
     const svg = element
@@ -70,7 +70,7 @@ export const progressiveRunRateCall = (
 
   const runsData = convertBallsToProgressiveRunRate(ballsData.balls);
 
-  let extentCheck: any = [...runsData]
+  let extentCheck: any = [...runsData];
   if (ballsData.runRateRequired) {
     extentCheck = [...extentCheck, ...ballsData.runRateRequired];
   }
@@ -81,7 +81,7 @@ export const progressiveRunRateCall = (
   const y = d3
     .scaleLinear()
     // @ts-ignore
-    .domain(d3.extent(extentCheck, d => d))
+    .domain(d3.extent(extentCheck, (d) => d))
     .nice()
     .range([height - margin.bottom, margin.top]);
 
@@ -99,14 +99,11 @@ export const progressiveRunRateCall = (
     const annotations: any[] = [];
 
     if (ballsData.batsmanName) {
-      const nameAnnotationIdx = parseInt((ballsData.balls.length * (2 / 3)).toString());
+      const nameAnnotationIdx = parseInt((ballsData.balls.length * (2 / 3)).toString(), 10);
       const finalRunRate = runsData[runsData.length - 1];
       annotations.push({
         note: {
-          label: `SR ${finalRunRate.toFixed(2)} (${(
-            (runsData[runsData.length - 1] / 100) *
-            6
-          ).toFixed(2)} RPO)`,
+          label: `SR ${finalRunRate.toFixed(2)} (${((runsData[runsData.length - 1] / 100) * 6).toFixed(2)} RPO)`,
           title: ballsData.batsmanName,
         },
         x: x(nameAnnotationIdx + 1),
